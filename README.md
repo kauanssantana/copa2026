@@ -13,7 +13,7 @@
 
 A **Central do Regulamento** é uma aplicação web Single Page Application (SPA) desenvolvida para servir como um *dashboard* informativo e interativo sobre a Copa do Mundo FIFA 2026™ (sediada no Canadá, México e EUA). 
 
-O sistema foi construído puramente com tecnologias nativas de Front-end (Vanilla JS), garantindo alta performance e carregamento instantâneo. A interface apresenta um design imersivo em *Dark Mode*, com tipografia moderna, efeitos de *Glassmorphism*, gradientes em neon baseados na identidade visual oficial da competição e um layout 100% responsivo (Mobile-First).
+O sistema foi construído puramente com tecnologias nativas de Front-end (Vanilla JS), garantindo alta performance e carregamento instantâneo. A interface apresenta um design imersivo em *Dark Mode* e com tipografia moderna baseados na identidade visual oficial da competição e um layout 100% responsivo (Mobile-First).
 
 <img width="1600" height="806" alt="9357f6d8-15e7-466d-a895-bb0b096467be" src="https://github.com/user-attachments/assets/7d75438a-c208-4455-bf38-00bdcefdf373" />
 
