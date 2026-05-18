@@ -61,7 +61,6 @@ Como a aplicação é 100% Front-end e não requer comunicação com banco de da
 ---
 
 ## 🛡️ Licença & Copyright
-<img width="1600" height="806" alt="9357f6d8-15e7-466d-a895-bb0b096467be" src="https://github.com/user-attachments/assets/3d26ddfb-6802-4a0c-9408-3f464b86e815" />
 
 Copyright (c) 2026 Kauan Santana Almeida. Todos os direitos reservados.
 
