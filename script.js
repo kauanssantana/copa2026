@@ -1,3 +1,17 @@
+// ===================================================
+//             FUNÇÕES UTILITÁRIAS (SEGURANÇA)
+// ===================================================
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.toString().replace(/[&<>'"]/g, tag => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    "'": '&#39;',
+    '"': '&quot;'
+  }[tag] || tag));
+}
+
 // ---------- TABS ----------
 const tabs = document.querySelectorAll('.tab');
 const panels = document.querySelectorAll('.panel');
@@ -84,7 +98,7 @@ function renderGroups() {
       const isHost = !!host, isChamp = !!champ;
       html += `<li class="${isHost?'host':''} ${isChamp?'champ':''}">
         <span class="flag">${FLAGS[name]||'🏳️'}</span>
-        <span class="team-name">${name}</span>
+        <span class="team-name"></span>
         <span class="markers">
           ${isHost?'<span class="m-host" title="País-sede">●</span>':''}
           ${isChamp?'<span class="m-champ" title="Campeão mundial">★</span>':''}
@@ -99,8 +113,6 @@ function renderGroups() {
 // ===================================================
 //                    JOGOS
 // ===================================================
-// Cada jogo: { group, teams:[a,b], date, time, city }
-// time = horário de Brasília (BRT)
 const ROUNDS = [
   {
     id: 'r1', label: '1ª Rodada', subtitle: '11 a 17 de junho de 2026',
@@ -322,37 +334,37 @@ const ROUNDS = [
 ];
 
 function teamHTML(name) {
-  return `<span class="match-team"><span class="flag">${FLAGS[name]||'🏳️'}</span><span>${name}</span></span>`;
+  return `<span class="match-team"><span class="flag">${FLAGS[name]||'🏳️'}</span></span>`;
 }
 
 function renderRound(round) {
-  let html = `<div class="round-header"><h3>${round.label}</h3><p>${round.subtitle}</p></div>`;
+  let html = `<div class="round-header"><h3>${escapeHTML(round.label)}</h3><p>${escapeHTML(round.subtitle)}</p></div>`;
   for (const day of round.days) {
-    html += `<div class="day-block"><div class="day-date">📅 ${day.date}</div><div class="day-matches">`;
+    html += `<div class="day-block"><div class="day-date">📅 ${escapeHTML(day.date)}</div><div class="day-matches">`;
     for (const m of day.matches) {
       if (round.knockout) {
         html += `<div class="match-card knockout">
-          <div class="match-code">${m.code}</div>
-          <div class="match-desc">${m.desc}</div>
-          <div class="match-city">📍 ${m.city}</div>
+          <div class="match-code">${escapeHTML(m.code)}</div>
+          <div class="match-desc">${escapeHTML(m.desc)}</div>
+          <div class="match-city">📍 ${escapeHTML(m.city)}</div>
         </div>`;
       } else {
         html += `<div class="match-card">
-          <div class="match-group">Grupo ${m.group}</div>
+          <div class="match-group">Grupo ${escapeHTML(m.group)}</div>
           <div class="sim-teams">
             <div class="sim-team">
-              <span class="flag">${FLAGS[m.teams[0]]||'🏳️'}</span> <span>${m.teams[0]}</span>
-              <input type="number" min="0" class="sim-input" data-team="${m.teams[0]}" data-group="${m.group}">
+              <span class="flag">${FLAGS[m.teams[0]]||'🏳️'}</span>
+              <input type="number" min="0" class="sim-input" data-team="${escapeHTML(m.teams[0])}" data-group="${escapeHTML(m.group)}">
             </div>
             <span class="vs">×</span>
             <div class="sim-team">
-              <input type="number" min="0" class="sim-input" data-team="${m.teams[1]}" data-group="${m.group}">
-              <span>${m.teams[1]}</span> <span class="flag">${FLAGS[m.teams[1]]||'🏳️'}</span>
+              <input type="number" min="0" class="sim-input" data-team="${escapeHTML(m.teams[1])}" data-group="${escapeHTML(m.group)}">
+              <span class="flag">${FLAGS[m.teams[1]]||'🏳️'}</span>
             </div>
           </div>
           <div class="match-meta">
-            <span class="match-time">⏰ ${m.time} (BRT)</span>
-            <span class="match-city">📍 ${m.city}</span>
+            <span class="match-time">⏰ ${escapeHTML(m.time)} (BRT)</span>
+            <span class="match-city">📍 ${escapeHTML(m.city)}</span>
           </div>
         </div>`;
       }
@@ -367,7 +379,7 @@ function renderMatches() {
   const cont = document.getElementById('matches-container');
   if (!tabsEl || !cont) return;
   tabsEl.innerHTML = ROUNDS.map((r,i) =>
-    `<button class="round-tab ${i===0?'active':''}" data-round="${r.id}">${r.label}</button>`
+    `<button class="round-tab ${i===0?'active':''}" data-round="${escapeHTML(r.id)}">${escapeHTML(r.label)}</button>`
   ).join('');
   cont.innerHTML = renderRound(ROUNDS[0]);
 
@@ -388,7 +400,6 @@ renderMatches();
 //              CONTAGEM REGRESSIVA
 // ===================================================
 function initCountdown() {
-  // Define a data de abertura da Copa (11 de Junho de 2026 às 00:00:00)
   const targetDate = new Date('2026-06-11T00:00:00').getTime();
   
   const daysEl = document.getElementById('cd-days');
@@ -397,40 +408,32 @@ function initCountdown() {
   const secsEl = document.getElementById('cd-secs');
   const container = document.getElementById('countdown-container');
 
-  // Se os elementos não existirem na página, para a função
   if (!daysEl) return;
 
   const updateCountdown = () => {
     const now = new Date().getTime();
     const distance = targetDate - now;
 
-    // Se a data já chegou
     if (distance < 0) {
       container.innerHTML = '<div class="cd-title" style="color: #4DD088;">A Copa do Mundo 2026 Começou! 🎉</div>';
       return;
     }
 
-    // Cálculos matemáticos para dias, horas, minutos e segundos
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    // Atualiza o HTML garantindo 2 dígitos (ex: 09 em vez de 9)
     daysEl.innerText = days;
     hoursEl.innerText = hours.toString().padStart(2, '0');
     minsEl.innerText = minutes.toString().padStart(2, '0');
     secsEl.innerText = seconds.toString().padStart(2, '0');
   };
 
-  // Roda uma vez imediatamente para não ficar "00" no primeiro segundo
   updateCountdown();
-  
-  // Atualiza a cada 1 segundo (1000 milissegundos)
   setInterval(updateCountdown, 1000);
 }
 
-// Inicializa a função
 initCountdown();
 
 // ===================================================
@@ -441,13 +444,11 @@ function initGroupSelectors() {
   const container = document.getElementById('group-selectors');
   if (!container) return;
   
-  // Cria os botões de A até L
   const groups = Object.keys(GROUPS);
   container.innerHTML = groups.map(g => 
-    `<button class="group-btn ${g === 'A' ? 'active' : ''}" data-group="${g}">Grupo ${g}</button>`
+    `<button class="group-btn ${g === 'A' ? 'active' : ''}" data-group="${escapeHTML(g)}">Grupo ${escapeHTML(g)}</button>`
   ).join('');
 
-  // Adiciona o evento de clique em cada botão
   container.querySelectorAll('.group-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       renderStandings(btn.dataset.group);
@@ -462,18 +463,15 @@ function renderStandings(groupLetter) {
 
   title.innerText = `Classificação - Grupo ${groupLetter}`;
 
-  // Atualiza qual botão está "ativo" visualmente (amarelo)
   document.querySelectorAll('.group-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.group === groupLetter);
   });
 
-  // 1. Inicia os status zerados
   let stats = {};
   GROUPS[groupLetter].forEach(t => {
     stats[t[0]] = { name: t[0], pts: 0, pj: 0, v: 0, e: 0, d: 0, gp: 0, gc: 0, sg: 0 };
   });
 
-  // 2. Lê os inputs digitados no DOM
   const inputs = document.querySelectorAll(`.sim-input[data-group="${groupLetter}"]`);
   
   for (let i = 0; i < inputs.length; i += 2) {
@@ -494,36 +492,29 @@ function renderStandings(groupLetter) {
     }
   }
 
-  // 3. Ordena pelos critérios: Pontos > Saldo > Gols Pró
   const sorted = Object.values(stats).sort((a,b) => {
     if(b.pts !== a.pts) return b.pts - a.pts;
     if(b.sg !== a.sg) return b.sg - a.sg;
     return b.gp - a.gp;
   });
 
-  // 4. Injeta no HTML
   tbody.innerHTML = sorted.map((s, i) => `
     <tr style="${i < 2 ? 'border-left: 3px solid var(--verde); background: rgba(0,168,89,0.05);' : ''}">
-      <td>${i+1}º <span class="flag">${FLAGS[s.name]}</span> ${s.name}</td>
+      <td>${i+1}º <span class="flag" style="margin-left: 8px;">${FLAGS[s.name]}</span></td>
       <td style="font-weight:bold; color:var(--amarelo);">${s.pts}</td>
       <td>${s.pj}</td><td>${s.v}</td><td>${s.e}</td><td>${s.d}</td><td>${s.sg}</td>
     </tr>
   `).join('');
 }
 
-// Listener global: se o usuário digitar um placar de um grupo diferente, 
-// a tabela muda para esse grupo automaticamente
 document.addEventListener('input', (e) => {
   if (e.target.classList.contains('sim-input')) {
     renderStandings(e.target.dataset.group);
   }
 });
 
-// Inicializa os botões e renderiza o grupo A por padrão ao carregar
-setTimeout(() => {
-  initGroupSelectors();
-  renderStandings('A');
-}, 100);
+initGroupSelectors();
+renderStandings('A');
 
 // ===================================================
 //             FILTROS DE JOGOS
@@ -535,29 +526,21 @@ function initFilters() {
   const clearBtn = document.getElementById('clear-filters');
   if (!teamSelect || !citySelect) return;
 
-  // 1. Preenche as Seleções em ordem alfabética
   const teams = Object.keys(FLAGS).sort();
-  teams.forEach(t => {
-    teamSelect.innerHTML += `<option value="${t}">${t}</option>`;
-  });
+  teamSelect.innerHTML += teams.map(t => `<option value="${escapeHTML(t)}">${escapeHTML(t)}</option>`).join('');
 
-  // 2. Preenche as Cidades lendo diretamente dos jogos cadastrados
   const cities = new Set();
   ROUNDS.forEach(r => {
     r.days.forEach(d => d.matches.forEach(m => cities.add(m.city)));
   });
-  Array.from(cities).sort().forEach(c => {
-    citySelect.innerHTML += `<option value="${c}">${c}</option>`;
-  });
+  citySelect.innerHTML += Array.from(cities).sort().map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
 
-  // 3. Adiciona a ação de filtrar
   const applyFilters = () => {
     const team = teamSelect.value;
     const city = citySelect.value;
     const tabsEl = document.getElementById('round-tabs');
     const cont = document.getElementById('matches-container');
 
-    // Se tudo estiver vazio, restaura a visualização normal por rodadas
     if (!team && !city) {
       tabsEl.style.display = 'flex';
       const activeTab = tabsEl.querySelector('.round-tab.active');
@@ -568,7 +551,6 @@ function initFilters() {
       return;
     }
 
-    // Se estiver filtrando, esconde as abas e busca os jogos
     tabsEl.style.display = 'none';
     let matchCount = 0;
     let html = `<div class="round-header"><h3>Resultados do Filtro</h3><p>Jogos encontrados para sua pesquisa</p></div><div class="day-matches">`;
@@ -579,34 +561,40 @@ function initFilters() {
           
           let matchTeam = true;
           if (team) {
-             // O filtro de seleção funciona apenas para a fase de grupos, onde os times estão definidos no array "teams"
              matchTeam = m.teams ? m.teams.includes(team) : false;
           }
           
           let matchCity = true;
           if (city) matchCity = m.city === city;
 
-          // Se o jogo bate com os filtros escolhidos, cria o card
           if (matchTeam && matchCity) {
             matchCount++;
-            const shortDate = day.date.split(',')[0]; // Pega só o dia da semana e número
+            const shortDate = escapeHTML(day.date.split(',').slice(0, 2).join(','));
             
             if (round.knockout) {
               html += `<div class="match-card knockout">
-                <div class="match-group" style="color:var(--amarelo)">${round.label}</div>
-                <div class="match-code">${m.code}</div>
-                <div class="match-desc">${m.desc}</div>
-                <div class="match-city" style="margin-top: 8px;">📅 ${shortDate} • 📍 ${m.city}</div>
+                <div class="match-group" style="color:var(--amarelo)">${escapeHTML(round.label)}</div>
+                <div class="match-code">${escapeHTML(m.code)}</div>
+                <div class="match-desc">${escapeHTML(m.desc)}</div>
+                <div class="match-city" style="margin-top: 8px;">📅 ${shortDate} • 📍 ${escapeHTML(m.city)}</div>
               </div>`;
             } else {
               html += `<div class="match-card">
-                <div class="match-group">${round.label} • Grupo ${m.group}</div>
-                <div class="match-teams">
-                  ${teamHTML(m.teams[0])} <span class="vs">×</span> ${teamHTML(m.teams[1])}
+                <div class="match-group">${escapeHTML(round.label)} • Grupo ${escapeHTML(m.group)}</div>
+                <div class="sim-teams">
+                  <div class="sim-team">
+                    <span class="flag">${FLAGS[m.teams[0]]||'🏳️'}</span>
+                    <input type="number" min="0" class="sim-input" data-team="${escapeHTML(m.teams[0])}" data-group="${escapeHTML(m.group)}">
+                  </div>
+                  <span class="vs">×</span>
+                  <div class="sim-team">
+                    <input type="number" min="0" class="sim-input" data-team="${escapeHTML(m.teams[1])}" data-group="${escapeHTML(m.group)}">
+                    <span class="flag">${FLAGS[m.teams[1]]||'🏳️'}</span>
+                  </div>
                 </div>
                 <div class="match-meta">
-                  <span class="match-time">📅 ${shortDate} • ⏰ ${m.time}</span>
-                  <span class="match-city">📍 ${m.city}</span>
+                  <span class="match-time">📅 ${shortDate} • ⏰ ${escapeHTML(m.time)}</span>
+                  <span class="match-city">📍 ${escapeHTML(m.city)}</span>
                 </div>
               </div>`;
             }
@@ -617,7 +605,6 @@ function initFilters() {
 
     html += `</div>`;
 
-    // Mensagem caso não tenha nenhum jogo naquele cruzamento (ex: Brasil jogando em Vancouver)
     if (matchCount === 0) {
       cont.innerHTML = `<div class="highlight-box">Nenhum jogo encontrado com os filtros selecionados.</div>`;
     } else {
@@ -625,11 +612,9 @@ function initFilters() {
     }
   };
 
-  // Escuta as mudanças nos menus
   teamSelect.addEventListener('change', applyFilters);
   citySelect.addEventListener('change', applyFilters);
   
-  // Escuta o botão de limpar
   clearBtn.addEventListener('click', () => {
     teamSelect.value = '';
     citySelect.value = '';
@@ -637,5 +622,4 @@ function initFilters() {
   });
 }
 
-// Inicia os filtros ao carregar
 initFilters();

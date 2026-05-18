@@ -4,12 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Copa do Mundo FIFA 2026™ — Central do Regulamento</title>
-<link rel="icon" type="image/jpeg" href="img/ico.jpg" />
+<link rel="icon" type="image/png" href="img/ico.png?v=2" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<!-- ============ HEADER ============ -->
 <header class="header">
   <div class="header-bg"></div>
   <div class="header-inner">
@@ -30,25 +29,23 @@
   </div>
 </header>
 
-<!-- ============ TABS ============ -->
 <nav class="tabs" aria-label="Navegação principal">
   <div class="tabs-inner">
     <button class="tab active" data-panel="overview">⚽ Visão Geral</button>
     <button class="tab" data-panel="formato">🏆 Formato</button>
     <button class="tab" data-panel="mata-mata">🎯 Mata-Mata</button>
     <button class="tab" data-panel="grupos">🌐 Grupos</button>
-    <button class="tab" data-panel="jogos">📅 Jogos</button>
+    <button class="tab" data-panel="jogos">⚽ Jogos</button>
     <button class="tab" data-panel="disciplina">🟨 Disciplina</button>
     <button class="tab" data-panel="desempate">⚖️ Desempate</button>
     <button class="tab" data-panel="regulamento">📜 Regulamento</button>
-    <button class="tab" data-panel="datas">📅 Datas</button>
+    <button class="tab" data-panel="datas">🗓️ Datas</button>
     <button class="tab" data-panel="faq">❓ FAQ</button>
   </div>
 </nav>
 
 <main class="main">
 
-  <!-- ============ OVERVIEW ============ -->
   <section class="panel active" id="overview">
     <div id="countdown-container" class="countdown-banner">
       <div class="cd-title">⏳ Faltam para a Copa do Mundo 2026:</div>
@@ -118,7 +115,6 @@
 
 
 
-  <!-- ============ FORMATO ============ -->
   <section class="panel" id="formato">
     <h2 class="block-title">Vagas por Confederação</h2>
     <div class="table-wrap">
@@ -161,7 +157,6 @@
     </div>
   </section>
 
-  <!-- ============ MATA-MATA ============ -->
   <section class="panel" id="mata-mata">
     <h2 class="block-title">Fases Eliminatórias</h2>
     <p class="lead">Avançam ao mata-mata os <strong>2 primeiros</strong> de cada grupo (24) + os <strong>8 melhores terceiros</strong> = <strong class="highlight-yellow">32 seleções</strong>.</p>
@@ -197,7 +192,6 @@
     </div>
   </section>
 
-  <!-- ============ DISCIPLINA ============ -->
   <section class="panel" id="disciplina">
     <h2 class="block-title">Cartões e Suspensões</h2>
     <div class="grid-2">
@@ -247,7 +241,6 @@
     </div>
   </section>
 
-  <!-- ============ DESEMPATE ============ -->
   <section class="panel" id="desempate">
     <h2 class="block-title">Critérios de Desempate (Art. 13)</h2>
     <p class="lead">Quando duas ou mais seleções terminam empatadas em pontos na fase de grupos, aplica-se a seguinte ordem:</p>
@@ -289,7 +282,6 @@
     </div>
   </section>
 
-  <!-- ============ REGULAMENTO ============ -->
   <section class="panel" id="regulamento">
     <h2 class="block-title">Regulamento Completo — Artigos</h2>
     <input id="search" type="search" class="search-input" placeholder="🔎 Pesquisar nos artigos (ex: cartão, prazo, jogador)..." />
@@ -334,7 +326,6 @@
     </div>
   </section>
 
-  <!-- ============ DATAS ============ -->
   <section class="panel" id="datas">
     <h2 class="block-title">Calendário Oficial</h2>
     <div class="timeline">
@@ -349,7 +340,6 @@
     </div>
   </section>
 
-  <!-- ============ FAQ ============ -->
   <section class="panel" id="faq">
     <h2 class="block-title">Perguntas Frequentes</h2>
     <div class="faq-list">
@@ -364,14 +354,12 @@
     </div>
   </section>
 
-  <!-- ============ GRUPOS ============ -->
   <section class="panel" id="grupos">
     <h2 class="block-title">Grupos da Copa do Mundo 2026</h2>
     <p class="lead">12 grupos (A–L) com 4 seleções cada. <span class="legend-host">●</span> país-sede &nbsp;&nbsp; <span class="legend-champ">★</span> campeões mundiais.</p>
     <div id="groups-grid" class="groups-grid"></div>
   </section>
 
-  <!-- ============ JOGOS ============ -->
   <section class="panel" id="jogos">
     <h2 class="block-title">Calendário de Jogos</h2>
     <p class="lead">Tabela completa da fase de grupos e do mata-mata. Horários em <strong>Brasília (BRT)</strong>.</p>
@@ -384,6 +372,22 @@
         <option value="">Todas as Cidades</option>
       </select>
       <button id="clear-filters" class="filter-btn">Limpar</button>
+    </div>
+
+    <div id="standings-box" class="standings-box">
+      <div class="standings-header">
+        <h3 id="standings-title">Classificação - Grupo A</h3>
+        <div id="group-selectors" class="group-selectors"></div>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr><th>Seleção</th><th>P</th><th>J</th><th>V</th><th>E</th><th>D</th><th>SG</th></tr>
+          </thead>
+          <tbody id="standings-body">
+            </tbody>
+        </table>
+      </div>
     </div>
 
     <div class="round-tabs" id="round-tabs"></div>
