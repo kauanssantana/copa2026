@@ -17,6 +17,7 @@ O sistema foi construído puramente com tecnologias nativas de Front-end (Vanill
 
 <img width="1600" height="806" alt="9357f6d8-15e7-466d-a895-bb0b096467be" src="https://github.com/user-attachments/assets/7d75438a-c208-4455-bf38-00bdcefdf373" />
 
+
 <img width="1600" height="806" alt="432d3f00-1e7a-43f6-8915-eb1b00d04d21" src="https://github.com/user-attachments/assets/80befd2c-83d0-4b03-8540-dbe0354fcb27" />
 
 ---
